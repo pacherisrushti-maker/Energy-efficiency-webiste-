@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Energy Efficiency of Electricity</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body style="font-family:Arial; background:#f2f6f7; padding:20px; text-align:center;">
+
+<h1>Energy Efficiency of Electricity</h1>
+<p>Software-Based Energy Usage Analysis & Management</p>
+
+<hr>
+
+<h3>Enter Electricity Bill Details</h3>
+
+Total Units (from bill):
+<input type="number" id="units"><br><br>
+
+Billing Days:
+<input type="number" id="days"><br><br>
+
+<button onclick="analyze()">Analyze Usage</button>
+
+<p id="daily"></p>
+<p id="peak"></p>
+
+<canvas id="usageChart" width="400" height="200"></canvas>
+
+<h2>Energy Saving Suggestions</h2>
+<p id="suggestions"></p>
+
+<p><b>Note:</b> Values are estimated for analysis purposes.</p>
+
+<script>
+function analyze() {
+
+  var units = document.getElementById("units").value;
+  var days = document.getElementById("days").value;
+
+  var daily = units / days;
+
+  var morning = daily * 0.25;
+  var afternoon = daily * 0.15;
+  var evening = daily * 0.40;
+  var night = daily * 0.20;
+
+  document.getElementById("daily").innerHTML =
+    "Average Daily Consumption: " + daily.toFixed(2) + " units";
+
+  // Find peak usage
+  var max = Math.max(morning, afternoon, evening, night);
+  var peakTime = "";
+
+  if (max === morning) peakTime = "Morning";
+  else if (max === afternoon) peakTime = "Afternoon";
+  else if (max === evening) peakTime = "Evening";
+  else peakTime = "Night";
+
+  document.getElementById("peak").innerHTML =
+    "Peak Electricity Usage Time: " + peakTime;
+
+  // Automatic Suggestions
+  var suggestionText = "";
+
+  if (peakTime === "Evening") {
+    suggestionText =
+      "Reduce simultaneous use of high-power appliances in the evening. Use LED lights and switch off unused devices.";
+  } else if (peakTime === "Morning") {
+    suggestionText =
+      "Avoid unnecessary appliance usage in the morning. Use natural light whenever possible.";
+  } else if (peakTime === "Afternoon") {
+    suggestionText =
+      "Afternoon usage can be minimized by switching off idle devices and avoiding standby power.";
+  } else {
+    suggestionText =
+      "Reduce night-time electricity usage by switching off fans, lights, and chargers when not required.";
+  }
+
+  document.getElementById("suggestions").innerHTML = suggestionText;
+
+  // Graph
+  new Chart(document.getElementById("usageChart"), {
+    type: 'bar',
+    data: {
+      labels: ["Morning", "Afternoon", "Evening", "Night"],
+      datasets: [{
+        label: "Electricity Usage (Units)",
+        data: [morning, afternoon, evening, night]
+      }]
+    }
+  });
+}
+</script>
+
+</body>
+</html>
